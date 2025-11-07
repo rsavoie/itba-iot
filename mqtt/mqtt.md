@@ -7,5 +7,5 @@
 `mosquitto_sub -h 192.168.1.14 -p 1883 -t RPicoW/Temperatura -v`
 
 ## Publicar con el cliente de CLI
-`mosquitto_pub -d -q 1 -h 192.168.1.14 -p 1883 -t RPicoW/Temperatura -m 25`
+`mosquitto_pub -d -q 1 -h 192.168.1.14 -p 1883 -t RPicoW/Temperatura -m 25`  
 `mosquitto_sub -h broker.hivemq.com -t "RPicoW/Temperatura" -v`
