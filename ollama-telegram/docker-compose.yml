@@ -1,0 +1,36 @@
+services:
+  # 1) Bot / integrador de Telegram que habla con la API de Ollama
+  ollama-tg:
+    build: .                 # Dockerfile en el mismo directorio
+    container_name: ollama-tg
+    restart: on-failure
+    env_file:
+      - ./.env               # TOKEN de Telegram, etc.
+    volumes:
+      - ollama-tg-data:/code  # SQLite u otros assets persistentes
+    network_mode: host        # Usa la red del host ► ve a Ollama en localhost
+
+  # 2) Servidor Ollama (API + runtime de modelos)
+  ollama-api:
+    image: ollama/ollama:latest
+    container_name: ollama-api
+    restart: on-failure
+    volumes:
+      - ./ollama:/root/.ollama    # Modelos y datos persisten fuera del contenedor
+    network_mode: host            # Escucha en 127.0.0.1:11434 sin -p
+
+  # 3) Open WebUI (frontal web amigable para Ollama)
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: on-failure
+    network_mode: host            # Expone su UI en el 8080 del host
+    volumes:
+      - open-webui-data:/app/backend/data
+    environment:
+      - OLLAMA_BASE_URL=http://127.0.0.1:11434  # URL interna a la API
+      - WEBUI_AUTH=False
+
+volumes:
+  ollama-tg-data:
+  open-webui-data:
